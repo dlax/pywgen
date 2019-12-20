@@ -16,6 +16,8 @@ setuptools.setup(
         "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
         "Operating System :: OS Independent",
     ],
+    entry_points={"console_scripts": ["pywgen=pywgen:main"]},
+    py_modules=["pywgen"],
     python_requires=">=3.6",
     use_scm_version=True,
     setup_requires=["setuptools_scm"],

@@ -4,4 +4,5 @@ dist/
 .eggs
 __pycache__
 
+.mypy_cache
 .tox
