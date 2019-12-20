@@ -2,6 +2,15 @@
 
 import argparse
 import pkg_resources
+import secrets
+import string
+
+
+def generate_password(length: int) -> str:
+    """Return one password of specified `length`.
+    """
+    chars = string.ascii_letters + string.digits
+    return "".join(secrets.choice(chars) for _ in range(length))
 
 
 def get_parser() -> argparse.ArgumentParser:
