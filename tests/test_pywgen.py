@@ -3,7 +3,13 @@ from unittest.mock import patch
 
 import pytest
 
-from pywgen import generate_password, get_parser, has_capitals, has_numerals
+from pywgen import (
+    generate_password,
+    get_parser,
+    has_capitals,
+    has_numerals,
+    is_interactive,
+)
 
 
 @pytest.mark.parametrize(["value", "result"], [("Ab6", True), ("123rt", False)])
@@ -41,20 +47,27 @@ def test_generate_password_calls_secrets_choice():
     assert pw == "aa"
 
 
+def test_is_interactive(capsys):
+    # stdout is captured, hence non-interactive mode
+    assert is_interactive() is False
+    with capsys.disabled():
+        assert is_interactive() is True
+
+
 @pytest.mark.parametrize(
     ["argv", "expected"],
     [
-        ("", {"pw_length": 8, "num_pw": None, "numerals": None, "capitalize": None}),
-        ("7", {"pw_length": 7, "num_pw": None, "numerals": None, "capitalize": None}),
+        ("", {"pw_length": 8, "num_pw": 1, "numerals": None, "capitalize": None}),
+        ("7", {"pw_length": 7, "num_pw": 1, "numerals": None, "capitalize": None}),
         ("2 9", {"pw_length": 2, "num_pw": 9, "numerals": None, "capitalize": None}),
-        ("-n", {"pw_length": 8, "num_pw": None, "numerals": True, "capitalize": None}),
+        ("-n", {"pw_length": 8, "num_pw": 1, "numerals": True, "capitalize": None}),
         (
             "-0 -A",
-            {"pw_length": 8, "num_pw": None, "numerals": False, "capitalize": False},
+            {"pw_length": 8, "num_pw": 1, "numerals": False, "capitalize": False},
         ),
         (
             "-c 12",
-            {"pw_length": 12, "num_pw": None, "numerals": None, "capitalize": True},
+            {"pw_length": 12, "num_pw": 1, "numerals": None, "capitalize": True},
         ),
     ],
 )
@@ -62,6 +75,21 @@ def test_parser(argv, expected):
     parser = get_parser()
     args = parser.parse_args(argv.split())
     assert vars(args) == expected
+
+
+def test_parser_interactive_num_pw(capsys):
+    parser = get_parser()
+    args = parser.parse_args([])
+    assert args.num_pw == 1
+
+    parser = get_parser()
+    args = parser.parse_args(["4", "10"])
+    assert args.num_pw == 10
+
+    with capsys.disabled():
+        parser = get_parser()
+        args = parser.parse_args([])
+    assert args.num_pw == 160
 
 
 @pytest.mark.parametrize("argv", [["-Ac"], ["-n", "-0"]])

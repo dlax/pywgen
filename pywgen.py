@@ -9,6 +9,7 @@ import argparse
 import pkg_resources
 import secrets
 import string
+import sys
 from typing import List, Optional
 
 
@@ -44,6 +45,21 @@ def generate_password(
             return "".join(elements)
 
 
+def is_interactive():
+    return sys.stdout.isatty()
+
+
+class NumPwAction(argparse.Action):
+    def __call__(self, parser, namespace, values, option_string):
+        if values is None:
+            if not is_interactive():
+                values = 1
+            else:
+                # 20 lines of 8 values
+                values = 20 * 8
+        setattr(namespace, self.dest, values)
+
+
 def get_parser() -> argparse.ArgumentParser:
     prog = "pywgen"
     parser = argparse.ArgumentParser(
@@ -57,7 +73,11 @@ def get_parser() -> argparse.ArgumentParser:
         "pw_length", help="password length", nargs="?", type=int, default=8
     )
     parser.add_argument(
-        "num_pw", help="number of passwords to generate", nargs="?", type=int
+        "num_pw",
+        help="number of passwords to generate",
+        nargs="?",
+        type=int,
+        action=NumPwAction,
     )
     numerals_group = parser.add_mutually_exclusive_group()
     numerals_group.add_argument(
