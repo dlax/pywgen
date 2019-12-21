@@ -139,9 +139,17 @@ def get_parser() -> argparse.ArgumentParser:
     return parser
 
 
-def main() -> None:
+def main(argv: List[str] = None) -> None:
     parser = get_parser()
-    parser.parse_args()
+    ns = parser.parse_args(argv)
+    args = vars(ns)
+    pw_length, num_pw = args.pop("pw_length"), args.pop("num_pw")
+    columns = args.pop("columns")
+    passwords = (generate_password(pw_length, **args) for _ in range(num_pw))
+    if columns:
+        write_columns(passwords, sys.stdout, pw_length)
+    else:
+        sys.stdout.write("\n".join(passwords))
 
 
 if __name__ == "__main__":

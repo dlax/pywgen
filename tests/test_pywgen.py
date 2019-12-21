@@ -11,6 +11,7 @@ from pywgen import (
     has_capitals,
     has_numerals,
     is_interactive,
+    main,
     write_columns,
 )
 
@@ -173,3 +174,24 @@ def test_parser_exclusive_options(argv):
     parser = get_parser()
     with pytest.raises(SystemExit, match="2"):
         parser.parse_args(argv)
+
+
+def test_main(capsys):
+    with patch("pywgen.generate_password", return_value="xyz") as patched:
+        main([])
+    patched.assert_called_once_with(8, capitalize=None, numerals=None)
+    captured = capsys.readouterr()
+    assert captured.err == ""
+    assert captured.out == "xyz"
+
+
+def test_main_columns(capsys):
+    with patch("pywgen.generate_password", return_value="abc") as patched:
+        main(["-C", "3", "40"])
+    patched.assert_called_with(3, capitalize=None, numerals=None)
+    assert patched.call_count == 40
+    captured = capsys.readouterr()
+    with open(datapath("abc40.txt")) as f:
+        expected = f.read()
+    assert captured.err == ""
+    assert captured.out == expected
