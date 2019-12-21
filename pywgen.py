@@ -46,6 +46,9 @@ def get_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--version", action="version", version=f"%(prog)s {dist.version}"
     )
+    parser.add_argument(
+        "pw_length", help="password length", nargs="?", type=int, default=8
+    )
     numerals_group = parser.add_mutually_exclusive_group()
     numerals_group.add_argument(
         "-0",

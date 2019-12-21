@@ -44,10 +44,11 @@ def test_generate_password_calls_secrets_choice():
 @pytest.mark.parametrize(
     ["argv", "expected"],
     [
-        ("", {"numerals": None, "capitalize": None}),
-        ("-n", {"numerals": True, "capitalize": None}),
-        ("-0 -A", {"numerals": False, "capitalize": False}),
-        ("-c", {"numerals": None, "capitalize": True}),
+        ("", {"pw_length": 8, "numerals": None, "capitalize": None}),
+        ("7", {"pw_length": 7, "numerals": None, "capitalize": None}),
+        ("-n", {"pw_length": 8, "numerals": True, "capitalize": None}),
+        ("-0 -A", {"pw_length": 8, "numerals": False, "capitalize": False}),
+        ("-c 12", {"pw_length": 12, "numerals": None, "capitalize": True}),
     ],
 )
 def test_parser(argv, expected):
