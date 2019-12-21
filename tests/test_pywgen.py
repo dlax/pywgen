@@ -168,6 +168,12 @@ def test_parser_interactive_num_pw_columns(capsys):
     assert args.num_pw == 160
     assert args.columns is True
 
+    with capsys.disabled():
+        parser = get_parser()
+        args = parser.parse_args(["-1", "8", "3"])
+    assert args.num_pw == 3
+    assert args.columns is False
+
 
 @pytest.mark.parametrize("argv", [["-Ac"], ["-n", "-0"]])
 def test_parser_exclusive_options(argv):

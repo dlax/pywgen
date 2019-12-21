@@ -126,13 +126,21 @@ def get_parser() -> argparse.ArgumentParser:
         dest="capitalize",
         default=None,
     )
-    parser.add_argument(
+    columns_group = parser.add_mutually_exclusive_group()
+    columns_group.add_argument(
         "-C",
         help=(
             "print the generated password in columns;"
             " this is the default if standard output is a TTY device"
         ),
         action="store_true",
+        dest="columns",
+        default=is_interactive(),
+    )
+    columns_group.add_argument(
+        "-1",
+        help="print the generated passwords one per line",
+        action="store_false",
         dest="columns",
         default=is_interactive(),
     )
