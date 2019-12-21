@@ -46,6 +46,40 @@ def get_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--version", action="version", version=f"%(prog)s {dist.version}"
     )
+    numerals_group = parser.add_mutually_exclusive_group()
+    numerals_group.add_argument(
+        "-0",
+        "--no-numerals",
+        help="don't include numbers in the generated password",
+        action="store_false",
+        dest="numerals",
+        default=None,
+    )
+    numerals_group.add_argument(
+        "-n",
+        "--numerals",
+        help="include at least one number in the generated password",
+        action="store_true",
+        dest="numerals",
+        default=None,
+    )
+    capitalize_group = parser.add_mutually_exclusive_group()
+    capitalize_group.add_argument(
+        "-A",
+        "--no-capitalize",
+        help="don't include capital letters in the generated password",
+        action="store_false",
+        dest="capitalize",
+        default=None,
+    )
+    capitalize_group.add_argument(
+        "-c",
+        "--capitalize",
+        help="include at least one capital letter in the generated password",
+        action="store_true",
+        dest="capitalize",
+        default=None,
+    )
     return parser
 
 

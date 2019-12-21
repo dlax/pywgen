@@ -3,7 +3,7 @@ from unittest.mock import patch
 
 import pytest
 
-from pywgen import generate_password, has_capitals, has_numerals
+from pywgen import generate_password, get_parser, has_capitals, has_numerals
 
 
 @pytest.mark.parametrize(["value", "result"], [("Ab6", True), ("123rt", False)])
@@ -39,3 +39,25 @@ def test_generate_password_calls_secrets_choice():
         pw = generate_password(2)
     assert patched.call_count == 2
     assert pw == "aa"
+
+
+@pytest.mark.parametrize(
+    ["argv", "expected"],
+    [
+        ("", {"numerals": None, "capitalize": None}),
+        ("-n", {"numerals": True, "capitalize": None}),
+        ("-0 -A", {"numerals": False, "capitalize": False}),
+        ("-c", {"numerals": None, "capitalize": True}),
+    ],
+)
+def test_parser(argv, expected):
+    parser = get_parser()
+    args = parser.parse_args(argv.split())
+    assert vars(args) == expected
+
+
+@pytest.mark.parametrize("argv", [["-Ac"], ["-n", "-0"]])
+def test_parser_exclusive_options(argv):
+    parser = get_parser()
+    with pytest.raises(SystemExit, match="2"):
+        parser.parse_args(argv)
