@@ -1,3 +1,5 @@
+import io
+import os.path
 import re
 from unittest.mock import patch
 
@@ -9,7 +11,12 @@ from pywgen import (
     has_capitals,
     has_numerals,
     is_interactive,
+    write_columns,
 )
+
+
+def datapath(*p):
+    return os.path.join(os.path.dirname(__file__), "data", *p)
 
 
 @pytest.mark.parametrize(["value", "result"], [("Ab6", True), ("123rt", False)])
@@ -45,6 +52,24 @@ def test_generate_password_calls_secrets_choice():
         pw = generate_password(2)
     assert patched.call_count == 2
     assert pw == "aa"
+
+
+@pytest.mark.parametrize("num", [40, 37])
+def test_write_columns(num):
+    output = io.StringIO()
+    write_columns(["abc"] * num, output, 3)
+    actual = output.getvalue()
+    with open(datapath(f"abc{num}.txt")) as f:
+        expected = f.read()
+    assert actual == expected
+
+
+def test_write_columns_long():
+    # value is longer than line length
+    output = io.StringIO()
+    write_columns(["a" * 81] * 2, output, 81)
+    actual = output.getvalue()
+    assert actual == "\n".join("a" * 81 for _ in range(2)) + "\n"
 
 
 def test_is_interactive(capsys):

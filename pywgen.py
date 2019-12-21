@@ -10,7 +10,7 @@ import pkg_resources
 import secrets
 import string
 import sys
-from typing import List, Optional
+from typing import Iterable, List, Optional, TextIO
 
 
 def has_capitals(values: List[str]) -> bool:
@@ -43,6 +43,19 @@ def generate_password(
             not numerals or (numerals and has_numerals(elements))
         ):
             return "".join(elements)
+
+
+def write_columns(values: Iterable[str], output: TextIO, item_length: int) -> None:
+    """Write `values` to `output` stream in columns."""
+    values_per_line = max(80 // (item_length + 1), 1)
+    line = []
+    for i, value in enumerate(values, 1):
+        line.append(value)
+        if i % values_per_line == 0:
+            output.write(" ".join(line) + "\n")
+            line = []
+    if line:
+        output.write(" ".join(line) + "\n")
 
 
 def is_interactive():
