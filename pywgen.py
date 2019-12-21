@@ -6,10 +6,13 @@ import secrets
 import string
 
 
-def generate_password(length: int) -> str:
-    """Return one password of specified `length`.
+def generate_password(length: int, numerals: bool = True) -> str:
+    """Return one password of specified `length` possibly excluding/including
+    character types matching keyword arguments.
     """
-    chars = string.ascii_letters + string.digits
+    chars = string.ascii_letters
+    if numerals:
+        chars += string.digits
     return "".join(secrets.choice(chars) for _ in range(length))
 
 
