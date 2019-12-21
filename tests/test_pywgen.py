@@ -1,6 +1,7 @@
 import io
 import os.path
 import re
+import string
 from unittest.mock import patch
 
 import pytest
@@ -15,10 +16,25 @@ from pywgen import (
     main,
     write_columns,
 )
+from pywgen.phonemes import Phoneme, PHONEMES
 
 
 def datapath(*p):
     return os.path.join(os.path.dirname(__file__), "data", *p)
+
+
+def test_phonemes():
+    assert Phoneme.VOWEL & Phoneme.VOWEL
+    assert Phoneme.CONSONANT & Phoneme.CONSONANT
+    assert not (Phoneme.VOWEL & Phoneme.CONSONANT)
+    # 0 does not combine with any others
+    assert not any(Phoneme(0) & p for p in Phoneme)
+
+
+def test_phonemes_contains_all_letters():
+    letters = set(string.ascii_lowercase)
+    phonemes_letters = set(s for s, _ in PHONEMES)
+    assert not letters - phonemes_letters
 
 
 @pytest.mark.parametrize(["value", "result"], [("Ab6", True), ("123rt", False)])
