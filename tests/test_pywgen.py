@@ -57,17 +57,65 @@ def test_is_interactive(capsys):
 @pytest.mark.parametrize(
     ["argv", "expected"],
     [
-        ("", {"pw_length": 8, "num_pw": 1, "numerals": None, "capitalize": None}),
-        ("7", {"pw_length": 7, "num_pw": 1, "numerals": None, "capitalize": None}),
-        ("2 9", {"pw_length": 2, "num_pw": 9, "numerals": None, "capitalize": None}),
-        ("-n", {"pw_length": 8, "num_pw": 1, "numerals": True, "capitalize": None}),
         (
-            "-0 -A",
-            {"pw_length": 8, "num_pw": 1, "numerals": False, "capitalize": False},
+            "",
+            {
+                "pw_length": 8,
+                "num_pw": 1,
+                "numerals": None,
+                "capitalize": None,
+                "columns": False,
+            },
         ),
         (
-            "-c 12",
-            {"pw_length": 12, "num_pw": 1, "numerals": None, "capitalize": True},
+            "7",
+            {
+                "pw_length": 7,
+                "num_pw": 1,
+                "numerals": None,
+                "capitalize": None,
+                "columns": False,
+            },
+        ),
+        (
+            "2 9",
+            {
+                "pw_length": 2,
+                "num_pw": 9,
+                "numerals": None,
+                "capitalize": None,
+                "columns": False,
+            },
+        ),
+        (
+            "-n",
+            {
+                "pw_length": 8,
+                "num_pw": 1,
+                "numerals": True,
+                "capitalize": None,
+                "columns": False,
+            },
+        ),
+        (
+            "-0 -A -C",
+            {
+                "pw_length": 8,
+                "num_pw": 1,
+                "numerals": False,
+                "capitalize": False,
+                "columns": True,
+            },
+        ),
+        (
+            "-c 12 -C",
+            {
+                "pw_length": 12,
+                "num_pw": 1,
+                "numerals": None,
+                "capitalize": True,
+                "columns": True,
+            },
         ),
     ],
 )
@@ -77,19 +125,22 @@ def test_parser(argv, expected):
     assert vars(args) == expected
 
 
-def test_parser_interactive_num_pw(capsys):
+def test_parser_interactive_num_pw_columns(capsys):
     parser = get_parser()
-    args = parser.parse_args([])
+    args = parser.parse_args(["-C"])
     assert args.num_pw == 1
+    assert args.columns is True
 
     parser = get_parser()
     args = parser.parse_args(["4", "10"])
     assert args.num_pw == 10
+    assert args.columns is False
 
     with capsys.disabled():
         parser = get_parser()
         args = parser.parse_args([])
     assert args.num_pw == 160
+    assert args.columns is True
 
 
 @pytest.mark.parametrize("argv", [["-Ac"], ["-n", "-0"]])

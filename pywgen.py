@@ -113,6 +113,16 @@ def get_parser() -> argparse.ArgumentParser:
         dest="capitalize",
         default=None,
     )
+    parser.add_argument(
+        "-C",
+        help=(
+            "print the generated password in columns;"
+            " this is the default if standard output is a TTY device"
+        ),
+        action="store_true",
+        dest="columns",
+        default=is_interactive(),
+    )
     return parser
 
 
