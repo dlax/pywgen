@@ -1,4 +1,9 @@
-"""generate pronounceable passwords"""
+"""generate pronounceable passwords
+
+When standard output (stdout) is  not  a tty, pywgen will only generate one
+password, as this tends to be much more convenient for shell scripts.
+Otherwise, a screenfull of passwords is produced.
+"""
 
 import argparse
 import pkg_resources
@@ -41,13 +46,18 @@ def generate_password(
 
 def get_parser() -> argparse.ArgumentParser:
     prog = "pywgen"
-    parser = argparse.ArgumentParser(prog, description=__doc__)
+    parser = argparse.ArgumentParser(
+        prog, description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
+    )
     dist = pkg_resources.get_distribution(prog)
     parser.add_argument(
         "--version", action="version", version=f"%(prog)s {dist.version}"
     )
     parser.add_argument(
         "pw_length", help="password length", nargs="?", type=int, default=8
+    )
+    parser.add_argument(
+        "num_pw", help="number of passwords to generate", nargs="?", type=int
     )
     numerals_group = parser.add_mutually_exclusive_group()
     numerals_group.add_argument(
