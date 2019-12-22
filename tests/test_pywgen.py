@@ -179,6 +179,7 @@ def test_is_interactive(capsys):
                 "numerals": None,
                 "capitalize": None,
                 "columns": False,
+                "secure": False,
                 "symbols": False,
             },
         ),
@@ -190,17 +191,19 @@ def test_is_interactive(capsys):
                 "numerals": None,
                 "capitalize": None,
                 "columns": False,
+                "secure": False,
                 "symbols": True,
             },
         ),
         (
-            "2 9 -y",
+            "2 9 -y -s",
             {
                 "pw_length": 2,
                 "num_pw": 9,
                 "numerals": None,
                 "capitalize": None,
                 "columns": False,
+                "secure": True,
                 "symbols": True,
             },
         ),
@@ -212,6 +215,7 @@ def test_is_interactive(capsys):
                 "numerals": True,
                 "capitalize": None,
                 "columns": False,
+                "secure": False,
                 "symbols": False,
             },
         ),
@@ -223,6 +227,7 @@ def test_is_interactive(capsys):
                 "numerals": False,
                 "capitalize": False,
                 "columns": True,
+                "secure": False,
                 "symbols": False,
             },
         ),
@@ -234,6 +239,7 @@ def test_is_interactive(capsys):
                 "numerals": None,
                 "capitalize": True,
                 "columns": True,
+                "secure": False,
                 "symbols": False,
             },
         ),
@@ -277,7 +283,7 @@ def test_parser_exclusive_options(argv):
 
 
 def test_main(capsys):
-    with patch("pywgen.generate_password", return_value="xyz") as patched:
+    with patch("pywgen.generate_pronounceable_password", return_value="xyz") as patched:
         main([])
     patched.assert_called_once_with(8, capitalize=None, numerals=None, symbols=False)
     captured = capsys.readouterr()
@@ -287,7 +293,7 @@ def test_main(capsys):
 
 def test_main_columns(capsys):
     with patch("pywgen.generate_password", return_value="abc") as patched:
-        main(["-C", "3", "40", "-y"])
+        main(["-C", "3", "40", "-y", "-s"])
     patched.assert_called_with(3, capitalize=None, numerals=None, symbols=True)
     assert patched.call_count == 40
     captured = capsys.readouterr()

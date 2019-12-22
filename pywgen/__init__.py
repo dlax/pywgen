@@ -222,6 +222,13 @@ def get_parser() -> argparse.ArgumentParser:
         action="store_true",
         default=False,
     )
+    parser.add_argument(
+        "-s",
+        "--secure",
+        help="produce completely random password",
+        action="store_true",
+        default=False,
+    )
     return parser
 
 
@@ -231,7 +238,11 @@ def main(argv: List[str] = None) -> None:
     args = vars(ns)
     pw_length, num_pw = args.pop("pw_length"), args.pop("num_pw")
     columns = args.pop("columns")
-    passwords = (generate_password(pw_length, **args) for _ in range(num_pw))
+    if args.pop("secure"):
+        genpw = generate_password
+    else:
+        genpw = generate_pronounceable_password
+    passwords = (genpw(pw_length, **args) for _ in range(num_pw))
     if columns:
         write_columns(passwords, sys.stdout, pw_length)
     else:
