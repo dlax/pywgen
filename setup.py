@@ -17,7 +17,7 @@ setuptools.setup(
         "Operating System :: OS Independent",
     ],
     entry_points={"console_scripts": ["pywgen=pywgen:main"]},
-    py_modules=["pywgen"],
+    packages=setuptools.find_packages(),
     python_requires=">=3.6",
     use_scm_version=True,
     setup_requires=["setuptools_scm"],

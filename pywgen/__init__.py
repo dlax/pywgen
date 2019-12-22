@@ -179,7 +179,3 @@ def main(argv: List[str] = None) -> None:
         write_columns(passwords, sys.stdout, pw_length)
     else:
         sys.stdout.write("\n".join(passwords))
-
-
-if __name__ == "__main__":
-    main()
