@@ -8,6 +8,7 @@ import pytest
 
 from pywgen import (
     generate_password,
+    generate_pronounceable_password,
     get_parser,
     has_capitals,
     has_numerals,
@@ -17,7 +18,13 @@ from pywgen import (
     pronounceable_choice,
     write_columns,
 )
-from pywgen.phonemes import Phoneme, PHONEMES
+from pywgen.phonemes import (
+    NUMERAL_PHONEMES,
+    Phoneme,
+    PHONEMES,
+    PHONEMES_WITH_CAPITALS,
+    PUNCTUATION_PHONEMES,
+)
 
 
 def datapath(*p):
@@ -98,6 +105,42 @@ def test_pronounceable_choice(phonemes, expected):
         while len(choice) < len(expected):
             choice += next(gen)
     assert choice == expected
+
+
+@pytest.mark.parametrize(
+    ["options", "choice", "phonemes", "expected"],
+    [
+        (
+            {"capitalize": None, "numerals": None, "symbols": True},
+            ["a", "B", "3", "de", "!"],
+            PHONEMES_WITH_CAPITALS + NUMERAL_PHONEMES + PUNCTUATION_PHONEMES,
+            "aB3!",
+        ),
+        (
+            {"capitalize": False, "numerals": True, "symbols": False},
+            ["a", "b", "!", "de", "T", "f", "7", "u", "z", "#"],
+            PHONEMES + NUMERAL_PHONEMES,
+            "f7uz",
+        ),
+        (
+            {"capitalize": False, "numerals": None, "symbols": True},
+            ["a", "b", "!", "de", "f", "7", "?", "x", "y"],
+            PHONEMES + NUMERAL_PHONEMES + PUNCTUATION_PHONEMES,
+            "ab!f",
+        ),
+        (
+            {"capitalize": True, "numerals": True, "symbols": True},
+            ["a", "b", "!", "de", "f", "7", "?", "x", "yz", "AB", "C"],
+            PHONEMES_WITH_CAPITALS + NUMERAL_PHONEMES + PUNCTUATION_PHONEMES,
+            "7?xC",
+        ),
+    ],
+)
+def test_generate_pronounceable_password(options, choice, phonemes, expected):
+    with patch("pywgen.pronounceable_choice", return_value=iter(choice)) as patched:
+        pw = generate_pronounceable_password(4, **options)
+    patched.assert_called_once_with(phonemes)
+    assert pw == expected
 
 
 @pytest.mark.parametrize("num", [40, 37])

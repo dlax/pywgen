@@ -12,7 +12,14 @@ import string
 import sys
 from typing import Iterable, Iterator, List, Optional, Sequence, TextIO
 
-from .phonemes import Phoneme, Phonemes
+from .phonemes import (
+    NUMERAL_PHONEMES,
+    Phoneme,
+    Phonemes,
+    PHONEMES,
+    PHONEMES_WITH_CAPITALS,
+    PUNCTUATION_PHONEMES,
+)
 
 
 def has_capitals(values: Sequence[str]) -> bool:
@@ -71,6 +78,42 @@ def pronounceable_choice(phonemes: Phonemes) -> Iterator[str]:
             continue
         yield ph
         previous_type = canditate_type
+
+
+def generate_pronounceable_password(
+    length: int,
+    numerals: Optional[bool] = None,
+    capitalize: Optional[bool] = None,
+    symbols: bool = False,
+) -> str:
+    """Return one pronounceable password of specified `length`.
+    character types matching keyword arguments.
+
+    See generate_password() for the meaning of keyword arguments.
+    """
+    if capitalize is not False:
+        candidates = PHONEMES_WITH_CAPITALS
+    else:
+        candidates = PHONEMES
+    if numerals is not False:
+        candidates += NUMERAL_PHONEMES
+    if symbols:
+        candidates += PUNCTUATION_PHONEMES
+    choices = pronounceable_choice(candidates)
+    while True:
+        candidate = ""
+        while len(candidate) < length:
+            ph = next(choices)
+            if len(candidate + ph) > length:
+                # phoneme too long, try another one
+                continue
+            candidate += ph
+        if (
+            (not capitalize or (capitalize and has_capitals(candidate)))
+            and (not numerals or (numerals and has_numerals(candidate)))
+            and (not symbols or (symbols and has_symbols(candidate)))
+        ):
+            return candidate
 
 
 def write_columns(values: Iterable[str], output: TextIO, item_length: int) -> None:

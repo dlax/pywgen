@@ -1,4 +1,5 @@
 import enum
+import string
 from typing import Tuple
 
 
@@ -50,3 +51,7 @@ PHONEMES: Phonemes = (
 PHONEMES_WITH_CAPITALS: Phonemes = PHONEMES + tuple(
     (ph.upper(), phtype) for ph, phtype in PHONEMES
 )
+
+NUMERAL_PHONEMES: Phonemes = tuple(((d, Phoneme(0)) for d in string.digits))
+
+PUNCTUATION_PHONEMES: Phonemes = tuple(((d, Phoneme(0)) for d in string.punctuation))
