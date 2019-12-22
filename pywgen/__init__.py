@@ -10,7 +10,9 @@ import pkg_resources
 import secrets
 import string
 import sys
-from typing import Iterable, List, Optional, Sequence, TextIO
+from typing import Iterable, Iterator, List, Optional, Sequence, TextIO
+
+from .phonemes import Phoneme, Phonemes
 
 
 def has_capitals(values: Sequence[str]) -> bool:
@@ -57,6 +59,18 @@ def generate_password(
             and (not symbols or has_symbols(elements))
         ):
             return "".join(elements)
+
+
+def pronounceable_choice(phonemes: Phonemes) -> Iterator[str]:
+    """Yield phoneme string to produce a pronounceable word once concatenated.
+    """
+    previous_type = Phoneme(0)
+    while True:
+        ph, canditate_type = secrets.choice(phonemes)
+        if canditate_type & previous_type:
+            continue
+        yield ph
+        previous_type = canditate_type
 
 
 def write_columns(values: Iterable[str], output: TextIO, item_length: int) -> None:

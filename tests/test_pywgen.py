@@ -14,6 +14,7 @@ from pywgen import (
     has_symbols,
     is_interactive,
     main,
+    pronounceable_choice,
     write_columns,
 )
 from pywgen.phonemes import Phoneme, PHONEMES
@@ -77,6 +78,26 @@ def test_generate_password_calls_secrets_choice():
         pw = generate_password(2)
     assert patched.call_count == 2
     assert pw == "aa"
+
+
+@pytest.mark.parametrize(
+    ["phonemes", "expected"],
+    [
+        ([("a", Phoneme.VOWEL), ("e", Phoneme.VOWEL), ("x", Phoneme.CONSONANT)], "ax",),
+        ([("b", Phoneme.CONSONANT), ("a", Phoneme.VOWEL)], "ba"),
+        (
+            [("au", Phoneme.VOWEL), ("e", Phoneme.VOWEL), ("x", Phoneme.CONSONANT)],
+            "aux",
+        ),
+    ],
+)
+def test_pronounceable_choice(phonemes, expected):
+    with patch("secrets.choice", new=next):
+        gen = pronounceable_choice(iter(phonemes))
+        choice = ""
+        while len(choice) < len(expected):
+            choice += next(gen)
+    assert choice == expected
 
 
 @pytest.mark.parametrize("num", [40, 37])
