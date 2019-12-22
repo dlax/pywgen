@@ -10,6 +10,7 @@ from pywgen import (
     get_parser,
     has_capitals,
     has_numerals,
+    has_symbols,
     is_interactive,
     main,
     write_columns,
@@ -32,6 +33,12 @@ def test_has_numerals(value, result):
     assert has_numerals(values) == result
 
 
+@pytest.mark.parametrize(["value", "result"], [("b!z6", True), ("4gt", False)])
+def test_has_symbols(value, result):
+    values = list(value)
+    assert has_symbols(values) == result
+
+
 @pytest.mark.parametrize(
     ["length", "options", "pattern"],
     [
@@ -41,6 +48,7 @@ def test_has_numerals(value, result):
         (7, {"capitalize": None}, r"[A-Za-z0-9]{7}"),
         (5, {"capitalize": False}, r"[a-z0-9]{5}"),
         (10, {"capitalize": True}, r"[A-Z]+[a-z0-9]+|[a-z0-9]+[A-Z]+"),
+        (5, {"symbols": True}, r".*[^A-Za-z0-9]+.*"),
     ],
 )
 def test_generate_password_produces_expected_characters(length, options, pattern):

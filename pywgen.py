@@ -21,8 +21,15 @@ def has_numerals(values: List[str]) -> bool:
     return any(v.isdigit() for v in values)
 
 
+def has_symbols(values: List[str]) -> bool:
+    return any(v in string.punctuation for v in values)
+
+
 def generate_password(
-    length: int, numerals: Optional[bool] = None, capitalize: Optional[bool] = None
+    length: int,
+    numerals: Optional[bool] = None,
+    capitalize: Optional[bool] = None,
+    symbols: bool = False,
 ) -> str:
     """Return one password of specified `length` possibly excluding/including
     character types matching keyword arguments.
@@ -30,6 +37,9 @@ def generate_password(
     `numerals` (resp. `capitalize`) control whether produced password must
     (True value), may (None value) or must not (False value) contain numerals
     (resp. capital letters).
+
+    `symbols` controls whether the password must contain at least one special
+    character.
     """
     if capitalize is False:
         chars = string.ascii_lowercase
@@ -37,10 +47,14 @@ def generate_password(
         chars = string.ascii_letters
     if numerals is not False:
         chars += string.digits
+    if symbols:
+        chars += string.punctuation
     while True:
         elements = [secrets.choice(chars) for _ in range(length)]
         if (not capitalize or (capitalize and has_capitals(elements))) and (
-            not numerals or (numerals and has_numerals(elements))
+            not numerals
+            or (numerals and has_numerals(elements))
+            and (not symbols or has_symbols(elements))
         ):
             return "".join(elements)
 
