@@ -158,6 +158,13 @@ def get_parser() -> argparse.ArgumentParser:
         dest="columns",
         default=is_interactive(),
     )
+    parser.add_argument(
+        "-y",
+        "--symbols",
+        help="include at least one special character in the password",
+        action="store_true",
+        default=False,
+    )
     return parser
 
 
