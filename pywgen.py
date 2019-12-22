@@ -10,18 +10,18 @@ import pkg_resources
 import secrets
 import string
 import sys
-from typing import Iterable, List, Optional, TextIO
+from typing import Iterable, List, Optional, Sequence, TextIO
 
 
-def has_capitals(values: List[str]) -> bool:
+def has_capitals(values: Sequence[str]) -> bool:
     return any(v.isupper() for v in values)
 
 
-def has_numerals(values: List[str]) -> bool:
+def has_numerals(values: Sequence[str]) -> bool:
     return any(v.isdigit() for v in values)
 
 
-def has_symbols(values: List[str]) -> bool:
+def has_symbols(values: Sequence[str]) -> bool:
     return any(v in string.punctuation for v in values)
 
 
