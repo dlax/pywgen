@@ -34,6 +34,34 @@ def has_symbols(values: Sequence[str]) -> bool:
     return any(v in string.punctuation for v in values)
 
 
+def check_password(
+    candidate: Sequence[str],
+    capitalize: Optional[bool],
+    numerals: Optional[bool],
+    symbols: Optional[bool],
+):
+    """Return True if `candidate` password satisfies conditions specified by
+    keyword arguments.
+    """
+    return (
+        (
+            capitalize is None
+            or (not capitalize and not has_capitals(candidate))
+            or (capitalize and has_capitals(candidate))
+        )
+        and (
+            numerals is None
+            or (not numerals and not has_numerals(candidate))
+            or (numerals and has_numerals(candidate))
+        )
+        and (
+            symbols is None
+            or (not symbols and not has_symbols(candidate))
+            or (symbols and has_symbols(candidate))
+        )
+    )
+
+
 def generate_password(
     length: int,
     numerals: Optional[bool] = None,
@@ -60,11 +88,7 @@ def generate_password(
         chars += string.punctuation
     while True:
         elements = [secrets.choice(chars) for _ in range(length)]
-        if (not capitalize or (capitalize and has_capitals(elements))) and (
-            not numerals
-            or (numerals and has_numerals(elements))
-            and (not symbols or has_symbols(elements))
-        ):
+        if check_password(elements, capitalize, numerals, symbols):
             return "".join(elements)
 
 
@@ -108,11 +132,7 @@ def generate_pronounceable_password(
                 # phoneme too long, try another one
                 continue
             candidate += ph
-        if (
-            (not capitalize or (capitalize and has_capitals(candidate)))
-            and (not numerals or (numerals and has_numerals(candidate)))
-            and (not symbols or (symbols and has_symbols(candidate)))
-        ):
+        if check_password(candidate, capitalize, numerals, symbols):
             return candidate
 
 

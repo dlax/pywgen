@@ -7,6 +7,7 @@ from unittest.mock import patch
 import pytest
 
 from pywgen import (
+    check_password,
     generate_password,
     generate_pronounceable_password,
     get_parser,
@@ -61,6 +62,24 @@ def test_has_numerals(value, result):
 def test_has_symbols(value, result):
     values = list(value)
     assert has_symbols(values) == result
+
+
+@pytest.mark.parametrize(
+    ["value", "capitalize", "numerals", "symbols", "expected"],
+    [
+        ("abc", True, None, None, False),
+        ("A!2", True, None, None, True),
+        ("A!2", False, None, None, False),
+        ("abc", None, True, None, False),
+        ("A!2", None, True, None, True),
+        ("A!2", None, False, None, False),
+        ("abc", None, None, True, False),
+        ("A!2", None, None, True, True),
+        ("A!2", None, None, False, False),
+    ],
+)
+def test_check_password(value, capitalize, numerals, symbols, expected):
+    assert check_password(value, capitalize, numerals, symbols) == expected
 
 
 @pytest.mark.parametrize(
