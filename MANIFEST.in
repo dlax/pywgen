@@ -4,4 +4,5 @@ include tox.ini
 recursive-include tests *.py
 recursive-include tests/data *.txt
 
+exclude .build.yml
 exclude .gitignore

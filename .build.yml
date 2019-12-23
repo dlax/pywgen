@@ -1,0 +1,9 @@
+image: debian/stable
+packages:
+  - tox
+sources:
+  - https://git.sr.ht/~dlax/pywgen
+tasks:
+  - tox: |
+     cd pywgen
+     tox -v
