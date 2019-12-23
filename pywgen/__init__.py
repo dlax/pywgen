@@ -1,6 +1,12 @@
-"""generate pronounceable passwords
+"""This program generates passwords that are both pronounceable and as secure
+as possible. By default, passwords contain lowercase letters and may include
+capital letters and numbers. Presence or absence of capitals, numbers or
+symbols can be controlled with options.
 
-When standard output (stdout) is  not  a tty, pywgen will only generate one
+It is also possible to generate completely random passwords, with the
+-s/--secure option.
+
+When standard output (stdout) is not a tty, pywgen will only generate one
 password, as this tends to be much more convenient for shell scripts.
 Otherwise, a screenfull of passwords is produced.
 """
