@@ -24,5 +24,5 @@ Running `pywgen` from a terminal produces a screen full of passwords. See
 ## Running tests
 
 Tests can be run using [tox](https://tox.readthedocs.io/) by simply executing
-the `tox` in a terminal. Alternatively, the test suite can be run using
-[pytest](https://docs.pytest.org/).
+the `tox` command in a terminal. Alternatively, the test suite can be run
+using [pytest](https://docs.pytest.org/).
