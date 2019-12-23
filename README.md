@@ -16,6 +16,11 @@ distribution, the program can be installed as follows:
 
 There are no external dependency, only the Python standard library is needed.
 
+## Using
+
+Running `pywgen` from a terminal produces a screen full of passwords. See
+`pywgen --help` for usage details.
+
 ## Running tests
 
 Tests can be run using [tox](https://tox.readthedocs.io/) by simply executing
