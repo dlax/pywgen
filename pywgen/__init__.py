@@ -182,6 +182,24 @@ class NumPwAction(argparse.Action):
         setattr(namespace, self.dest, values)
 
 
+class StrAppendConstAction(argparse.Action):
+    """An Action similar to "append_const" but using a str as container
+    instead of a list.
+    """
+
+    def __init__(self, option_strings, dest, const, **kwargs):
+        if "nargs" in kwargs:
+            raise ValueError("unexpected 'nargs' argument")
+        super().__init__(option_strings, dest, nargs=0, const=const, **kwargs)
+
+    def __call__(self, parser, namespace, values, option_string=None):
+        elements = getattr(namespace, self.dest, None)
+        if elements is None:
+            elements = ""
+        elements += self.const
+        setattr(namespace, self.dest, elements)
+
+
 def get_parser() -> argparse.ArgumentParser:
     prog = "pywgen"
     parser = argparse.ArgumentParser(
@@ -264,6 +282,17 @@ def get_parser() -> argparse.ArgumentParser:
         "-r",
         "--remove-chars",
         help="don't use the specified characters in the password",
+    )
+    parser.add_argument(
+        "-B",
+        "--ambiguous",
+        help=(
+            "don't include characters that could be confused by the user when "
+            "printed such as 'l' and '1' or '0' and 'O'"
+        ),
+        dest="remove_chars",
+        const="l10O",
+        action=StrAppendConstAction,
     )
     parser.add_argument(
         "-s",

@@ -256,7 +256,7 @@ def test_is_interactive(capsys):
             },
         ),
         (
-            "-0 -A -C -r a?3",
+            "-0 -A -C -r a?3 -B",
             {
                 "pw_length": 8,
                 "num_pw": 1,
@@ -265,11 +265,11 @@ def test_is_interactive(capsys):
                 "columns": True,
                 "secure": False,
                 "symbols": False,
-                "remove_chars": "a?3",
+                "remove_chars": "a?3" + "l10O",
             },
         ),
         (
-            "-c 12 -C",
+            "-c 12 -C -B",
             {
                 "pw_length": 12,
                 "num_pw": 1,
@@ -278,7 +278,7 @@ def test_is_interactive(capsys):
                 "columns": True,
                 "secure": False,
                 "symbols": False,
-                "remove_chars": None,
+                "remove_chars": "l10O",
             },
         ),
     ],
