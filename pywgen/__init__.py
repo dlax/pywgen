@@ -73,8 +73,8 @@ def generate_password(
     numerals: Optional[bool] = None,
     capitalize: Optional[bool] = None,
     symbols: bool = False,
-) -> str:
-    """Return one password of specified `length` possibly excluding/including
+) -> Iterator[str]:
+    """Yield passwords of specified `length` possibly excluding/including
     character types matching keyword arguments.
 
     `numerals` (resp. `capitalize`) control whether produced password must
@@ -95,7 +95,7 @@ def generate_password(
     while True:
         elements = [secrets.choice(chars) for _ in range(length)]
         if check_password(elements, capitalize, numerals, symbols):
-            return "".join(elements)
+            yield "".join(elements)
 
 
 def pronounceable_choice(phonemes: Phonemes) -> Iterator[str]:
@@ -115,9 +115,9 @@ def generate_pronounceable_password(
     numerals: Optional[bool] = None,
     capitalize: Optional[bool] = None,
     symbols: bool = False,
-) -> str:
-    """Return one pronounceable password of specified `length`.
-    character types matching keyword arguments.
+) -> Iterator[str]:
+    """Yield pronounceable passwords of specified `length` possibly
+    excluding/including character types matching keyword arguments.
 
     See generate_password() for the meaning of keyword arguments.
     """
@@ -139,7 +139,7 @@ def generate_pronounceable_password(
                 continue
             candidate += ph
         if check_password(candidate, capitalize, numerals, symbols):
-            return candidate
+            yield candidate
 
 
 def write_columns(values: Iterable[str], output: TextIO, item_length: int) -> None:
@@ -265,10 +265,10 @@ def main(argv: List[str] = None) -> None:
     pw_length, num_pw = args.pop("pw_length"), args.pop("num_pw")
     columns = args.pop("columns")
     if args.pop("secure"):
-        genpw = generate_password
+        pw_generator = generate_password(pw_length, **args)
     else:
-        genpw = generate_pronounceable_password
-    passwords = (genpw(pw_length, **args) for _ in range(num_pw))
+        pw_generator = generate_pronounceable_password(pw_length, **args)
+    passwords = (next(pw_generator) for _ in range(num_pw))
     if columns:
         write_columns(passwords, sys.stdout, pw_length)
     else:

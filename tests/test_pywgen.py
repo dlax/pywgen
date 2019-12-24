@@ -1,4 +1,5 @@
 import io
+import itertools
 import os.path
 import re
 import string
@@ -95,13 +96,13 @@ def test_check_password(value, capitalize, numerals, symbols, expected):
     ],
 )
 def test_generate_password_produces_expected_characters(length, options, pattern):
-    pw = generate_password(length, **options)
+    pw = next(generate_password(length, **options))
     assert re.match(pattern, pw)
 
 
 def test_generate_password_calls_secrets_choice():
     with patch("secrets.choice", return_value="a") as patched:
-        pw = generate_password(2)
+        pw = next(generate_password(2))
     assert patched.call_count == 2
     assert pw == "aa"
 
@@ -157,7 +158,7 @@ def test_pronounceable_choice(phonemes, expected):
 )
 def test_generate_pronounceable_password(options, choice, phonemes, expected):
     with patch("pywgen.pronounceable_choice", return_value=iter(choice)) as patched:
-        pw = generate_pronounceable_password(4, **options)
+        pw = next(generate_pronounceable_password(4, **options))
     patched.assert_called_once_with(phonemes)
     assert pw == expected
 
@@ -302,7 +303,9 @@ def test_parser_exclusive_options(argv):
 
 
 def test_main(capsys):
-    with patch("pywgen.generate_pronounceable_password", return_value="xyz") as patched:
+    with patch(
+        "pywgen.generate_pronounceable_password", return_value=itertools.repeat("xyz")
+    ) as patched:
         main([])
     patched.assert_called_once_with(8, capitalize=None, numerals=None, symbols=False)
     captured = capsys.readouterr()
@@ -311,10 +314,11 @@ def test_main(capsys):
 
 
 def test_main_columns(capsys):
-    with patch("pywgen.generate_password", return_value="abc") as patched:
+    with patch(
+        "pywgen.generate_password", return_value=itertools.repeat("abc")
+    ) as patched:
         main(["-C", "3", "40", "-y", "-s"])
-    patched.assert_called_with(3, capitalize=None, numerals=None, symbols=True)
-    assert patched.call_count == 40
+    patched.assert_called_once_with(3, capitalize=None, numerals=None, symbols=True)
     captured = capsys.readouterr()
     with open(datapath("abc40.txt")) as f:
         expected = f.read()
