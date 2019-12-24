@@ -5,7 +5,7 @@ easily memorized by humans, while being as secure as possible.
 
 pywgen is a clone of [pwgen](https://github.com/tytso/pwgen) implementing most
 of its features with the exception of options to exclude certain characters
-(--ambiguous, --remove-chars and --no-vowels).
+(--ambiguous and --no-vowels).
 
 ## Installing
 

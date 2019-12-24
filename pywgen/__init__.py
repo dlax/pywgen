@@ -261,6 +261,11 @@ def get_parser() -> argparse.ArgumentParser:
         default=False,
     )
     parser.add_argument(
+        "-r",
+        "--remove-chars",
+        help="don't use the specified characters in the password",
+    )
+    parser.add_argument(
         "-s",
         "--secure",
         help="produce completely random password",
