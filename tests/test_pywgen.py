@@ -93,6 +93,7 @@ def test_check_password(value, capitalize, numerals, symbols, expected):
         (5, {"capitalize": False}, r"[a-z0-9]{5}"),
         (10, {"capitalize": True}, r"[A-Z]+[a-z0-9]+|[a-z0-9]+[A-Z]+"),
         (5, {"symbols": True}, r".*[^A-Za-z0-9]+.*"),
+        (10, {"remove_chars": "AazZ"}, r"[B-Yb-y0-9]{10}"),
     ],
 )
 def test_generate_password_produces_expected_characters(length, options, pattern):
@@ -153,6 +154,17 @@ def test_pronounceable_choice(phonemes, expected):
             ["a", "b", "!", "de", "f", "7", "?", "x", "yz", "AB", "C"],
             PHONEMES_WITH_CAPITALS + NUMERAL_PHONEMES + PUNCTUATION_PHONEMES,
             "7?xC",
+        ),
+        (
+            {
+                "capitalize": False,
+                "numerals": False,
+                "symbols": False,
+                "remove_chars": "z",
+            },
+            ["a", "b", "c", "d"],
+            tuple(((ph, phtype) for ph, phtype in PHONEMES if ph != "z")),
+            "abcd",
         ),
     ],
 )

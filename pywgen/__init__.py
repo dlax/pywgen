@@ -73,6 +73,7 @@ def generate_password(
     numerals: Optional[bool] = None,
     capitalize: Optional[bool] = None,
     symbols: bool = False,
+    remove_chars: Optional[Sequence[str]] = None,
 ) -> Generator[str, None, None]:
     """Yield passwords of specified `length` possibly excluding/including
     character types matching keyword arguments.
@@ -92,6 +93,8 @@ def generate_password(
         chars += string.digits
     if symbols:
         chars += string.punctuation
+    if remove_chars:
+        chars = "".join(c for c in chars if c not in remove_chars)
     while True:
         elements = [secrets.choice(chars) for _ in range(length)]
         if check_password(elements, capitalize, numerals, symbols):
@@ -115,6 +118,7 @@ def generate_pronounceable_password(
     numerals: Optional[bool] = None,
     capitalize: Optional[bool] = None,
     symbols: bool = False,
+    remove_chars: Optional[Sequence[str]] = None,
 ) -> Generator[str, None, None]:
     """Yield pronounceable passwords of specified `length` possibly
     excluding/including character types matching keyword arguments.
@@ -129,6 +133,14 @@ def generate_pronounceable_password(
         candidates += NUMERAL_PHONEMES
     if symbols:
         candidates += PUNCTUATION_PHONEMES
+    if remove_chars:
+        candidates = tuple(
+            (
+                (ph, phtype)
+                for ph, phtype in candidates
+                if not any(c in ph for c in remove_chars)
+            )
+        )
     choices = pronounceable_choice(candidates)
     while True:
         candidate = ""
