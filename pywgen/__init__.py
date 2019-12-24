@@ -16,7 +16,7 @@ import pkg_resources
 import secrets
 import string
 import sys
-from typing import Iterable, Iterator, List, Optional, Sequence, TextIO
+from typing import Generator, Iterable, List, Optional, Sequence, TextIO
 
 from .phonemes import (
     NUMERAL_PHONEMES,
@@ -73,7 +73,7 @@ def generate_password(
     numerals: Optional[bool] = None,
     capitalize: Optional[bool] = None,
     symbols: bool = False,
-) -> Iterator[str]:
+) -> Generator[str, None, None]:
     """Yield passwords of specified `length` possibly excluding/including
     character types matching keyword arguments.
 
@@ -98,7 +98,7 @@ def generate_password(
             yield "".join(elements)
 
 
-def pronounceable_choice(phonemes: Phonemes) -> Iterator[str]:
+def pronounceable_choice(phonemes: Phonemes) -> Generator[str, None, None]:
     """Yield phoneme string to produce a pronounceable word once concatenated.
     """
     previous_type = Phoneme(0)
@@ -115,7 +115,7 @@ def generate_pronounceable_password(
     numerals: Optional[bool] = None,
     capitalize: Optional[bool] = None,
     symbols: bool = False,
-) -> Iterator[str]:
+) -> Generator[str, None, None]:
     """Yield pronounceable passwords of specified `length` possibly
     excluding/including character types matching keyword arguments.
 
