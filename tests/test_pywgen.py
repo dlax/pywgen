@@ -111,7 +111,10 @@ def test_generate_password_calls_secrets_choice():
 @pytest.mark.parametrize(
     ["phonemes", "expected"],
     [
-        ([("a", Phoneme.VOWEL), ("e", Phoneme.VOWEL), ("x", Phoneme.CONSONANT)], "ax",),
+        (
+            [("a", Phoneme.VOWEL), ("e", Phoneme.VOWEL), ("x", Phoneme.CONSONANT)],
+            "ax",
+        ),
         ([("b", Phoneme.CONSONANT), ("a", Phoneme.VOWEL)], "ba"),
         (
             [("au", Phoneme.VOWEL), ("e", Phoneme.VOWEL), ("x", Phoneme.CONSONANT)],

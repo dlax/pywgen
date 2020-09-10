@@ -102,8 +102,7 @@ def generate_password(
 
 
 def pronounceable_choice(phonemes: Phonemes) -> Generator[str, None, None]:
-    """Yield phoneme string to produce a pronounceable word once concatenated.
-    """
+    """Yield phoneme string to produce a pronounceable word once concatenated."""
     previous_type = Phoneme(0)
     while True:
         ph, canditate_type = secrets.choice(phonemes)
