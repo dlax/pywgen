@@ -1,0 +1,21 @@
+name: pywgen
+base: core20
+version: git
+summary: generate pronounceable passwords
+description: |
+  pywgen is a Python program to generate passwords which are designed to be
+  easily memorized by humans, while being as secure as possible.
+
+  It is a clone of pwgen.
+
+grade: devel # must be 'stable' to release into candidate/stable channels
+confinement: strict
+
+parts:
+  pywgen:
+    plugin: python
+    source: .
+
+apps:
+  pywgen:
+    command: bin/pywgen
